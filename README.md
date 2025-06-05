@@ -1,4 +1,4 @@
-
+'''
 # AI-Powered PBIX File Transformer
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -6,118 +6,122 @@
 [![GitHub Stars](https://img.shields.io/github/stars/dynamo14324/ai-pbix-transformer?style=social)](https://github.com/dynamo14324/ai-pbix-transformer/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/dynamo14324/ai-pbix-transformer?style=social)](https://github.com/dynamo14324/ai-pbix-transformer/network/members)
 
-**Transform your Power BI PBIX files using the power of AI!** This project provides a system to programmatically analyze, modify, and repackage PBIX files based on natural language instructions, similar to how AI tools interact with documents like Excel or Word.
+**Transform your Power BI PBIX files using the power of AI!** This project provides a system to programmatically analyze, modify, and repackage PBIX files based on natural language instructions.
 
 ## Overview
 
 Power BI Desktop files (PBIX) are essentially zip archives containing various components like data models (TMDL), report layouts (JSON), data source queries (M scripts), and static resources. Manually editing these components is complex and error-prone. This tool aims to automate the process by:
 
-1.  **Extracting:** Deconstructing PBIX files into their core components.
-2.  **Parsing:** Understanding the structure and content of these components.
-3.  **Modeling:** Creating an editable, structured representation of the PBIX internals.
-4.  **AI Interpretation:** Using Large Language Models (LLMs) like GPT-4 to understand user requests (e.g., "Add a sales trend visual," "Update the database connection").
-5.  **Editing:** Programmatically applying the requested changes to the PBIX model.
-6.  **Repackaging:** Recompiling the modified components back into a valid PBIX file.
-7.  **Validating:** Ensuring the modified PBIX file works correctly.
+1.  **Extracting:** Deconstructing PBIX files into their core components (`src/extractor.py`).
+2.  **Parsing:** Understanding the structure and content of key components like the report layout (`src/parser.py`).
+3.  **Modeling:** Creating an editable, structured representation of the PBIX internals (Implicit in parsing/editing).
+4.  **AI Interpretation:** Using Large Language Models (LLMs) to understand user requests and translate them into structured edit instructions (`src/ai_handler.py`).
+5.  **Editing:** Programmatically applying the requested changes to the PBIX model (Placeholder logic in `src/transformer.py`).
+6.  **Repackaging:** Recompiling the modified components back into a valid PBIX file (Future step, requires `pbi-tools` or similar).
+7.  **Validating:** Ensuring the modified PBIX file works correctly (Future step).
 
-## Features (Planned)
+## Features
 
-*   **Automated PBIX Extraction & Repackaging:** Leverages `pbi-tools` for reliable PBIX manipulation.
-*   **Structured PBIX Model:** Represents PBIX components (TMDL, Layout JSON, M Scripts) in an easily editable format.
-*   **Natural Language Interface:** Allows users to specify modifications using plain English.
-*   **AI-Powered Edits:** Integrates with LLMs to generate necessary code (DAX, M, JSON) for modifications.
-*   **Extensible Edit Engine:** Supports a growing range of modifications, from simple measure changes to complex visual additions.
-*   **Validation:** Includes steps to verify the integrity of the modified PBIX file.
+*   **Automated PBIX Extraction:** Extracts PBIX contents into a temporary directory.
+*   **Report Layout Parsing:** Parses the `Report/Layout` JSON file.
+*   **Natural Language Interface:** Accepts user edit requests via command-line argument.
+*   **AI-Powered Edit Instruction Generation:** Integrates with an AI model (placeholder) to generate structured edit instructions based on the user request and report structure.
+*   **Placeholder Edit Application:** Demonstrates how AI instructions *could* be applied to the parsed layout data (currently adds comments).
+*   **End-to-End Workflow Orchestration:** The `src/transformer.py` script manages the process from extraction to simulated repackaging.
 
 ## Project Roadmap
 
-This project follows a phased approach to deliver an AI-driven PBIX transformation tool.
+This project follows a phased approach:
 
-**Phase 1: Foundation & Research (Completed)**
-*   **Goal:** Understand PBIX internals, collect samples, set up toolchain.
-*   **Actions:** Explored PBIX structure using `pbi-tools`, documented component anatomy (TMDL, JSON, M).
-*   **Output:** PBIX anatomy guide, initial understanding.
+*   **Phase 1: Foundation & Research (Completed)**
+*   **Phase 2: Parsing & Data Modeling (Partially Complete - Layout Parsing)**
+*   **Phase 3: AI Understanding & Intent Mapping (Initial Implementation)**
+*   **Phase 4: AI-Driven Edit Engine (Placeholder Implemented)**
+*   **Phase 5: Repackaging & Validation (Future Work)**
+*   **Phase 6: User Interface (MVP - CLI Implemented)**
+*   **Phase 7: Scaling & Learning (Future Work)**
 
-**Phase 2: Parsing & Data Modeling**
-*   **Goal:** Automate extraction and create a unified, editable PBIX representation.
-*   **Actions:** Develop script for batch extraction, design Python/JSON schema for PBIX model.
-*   **Output:** Automated extractor script, PBIX Model definition.
-
-**Phase 3: AI Understanding & Intent Mapping**
-*   **Goal:** Enable AI to map user requests to PBIX structure changes.
-*   **Actions:** Craft prompt templates for LLMs, build intent-to-action mapping logic.
-*   **Output:** Prompt library, mapping functions/rules engine.
-
-**Phase 4: AI-Driven Edit Engine**
-*   **Goal:** Programmatically apply changes to extracted PBIX components.
-*   **Actions:** Write functions for editing TMDL, JSON, M scripts; integrate LLM for code generation (DAX, M, JSON).
-*   **Output:** Edit function library, AI code generator module.
-
-**Phase 5: Repackaging & Validation**
-*   **Goal:** Rebuild the PBIX file and ensure it works.
-*   **Actions:** Use `pbi-tools` for compilation, implement automated/manual testing procedures.
-*   **Output:** End-to-end workflow for modifying and validating PBIX files.
-
-**Phase 6: User Interface (MVP)**
-*   **Goal:** Provide a basic user interface.
-*   **Actions:** Build a Command-Line Interface (CLI) for user interaction.
-*   **Output:** Usable CLI tool.
-
-**Phase 7: Scaling & Learning**
-*   **Goal:** Improve AI accuracy and expand capabilities.
-*   **Actions:** Implement feedback loop for fine-tuning, add support for more complex edits.
-*   **Output:** Enhanced tool performance and feature set.
-
-*(Visual: High-level architecture diagram showing PBIX -> Extract -> Model -> AI -> Edit -> Repackage -> Validate flow - Placeholder)*
+*(Visual: High-level architecture diagram)*
 ```mermaid
 graph LR
-    A[PBIX File] --> B(Extract Components); 
-    B -- TMDL, JSON, M --> C(Parse & Build Model);
-    C --> D{Editable PBIX Model};
-    E[User Request] --> F(AI Interpretation);
-    F -- Mapped Actions --> G(Edit Engine);
+    A[PBIX File] --> B(Extract Components - extractor.py);
+    B -- Report/Layout --> C(Parse Layout - parser.py);
+    C --> D{Parsed Layout Data};
+    E[User Request] --> F(AI Interpretation - ai_handler.py);
+    F -- Structured Instructions --> G(Apply Edits - transformer.py);
     D --> G;
-    G --> H(Apply Edits);
-    H -- Modified Components --> I(Repackage);
-    I --> J(Validate);
+    G -- Modified Layout --> H(Save Layout - parser.py);
+    H -- Modified Components --> I(Repackage - *Future*);
+    I --> J(Validate - *Future*);
     J --> K[Modified PBIX File];
 ```
 
 ## Getting Started
 
-**(Instructions will be added once the core functionality is developed)**
+### Prerequisites
 
-Prerequisites:
-*   Python 3.x
-*   `pbi-tools` (Installation guide: [https://pbi.tools/](https://pbi.tools/))
-*   (Potentially) OpenAI API Key or access to another LLM
+*   Python 3.8+
+*   Required Python packages (will be listed in `requirements.txt`)
+*   **(Future)** `pbi-tools` for actual repackaging.
+*   **(Future)** Access to an AI model API (e.g., OpenAI) and an API key configured for `src/ai_handler.py`.
 
-Installation:
-```bash
-git clone https://github.com/dynamo14324/ai-pbix-transformer.git
-cd ai-pbix-transformer
-pip install -r requirements.txt # (requirements.txt to be added)
-```
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/dynamo14324/ai-pbix-transformer.git
+    cd ai-pbix-transformer
+    ```
+2.  Create a virtual environment (recommended):
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+3.  Install dependencies (once `requirements.txt` is created):
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Usage
 
-**(Examples will be provided as features become available)**
+The main entry point is `src/transformer.py`. It takes the input PBIX file, the desired output path, and the natural language edit request.
 
-Example (Conceptual CLI):
+**Example Command:**
+
 ```bash
-python transform_pbix.py --input report.pbix --output modified_report.pbix --request "Add a new measure 'Total Profit' as SUM(Sales[Revenue]) - SUM(Sales[Cost])"
+python src/transformer.py \
+    --input /path/to/your/report.pbix \
+    --output /path/to/your/modified_report.pbix \
+    --request "Add a textbox with the text 'Confidential Draft' to the main page"
 ```
+
+**Explanation:**
+
+1.  The script extracts `/path/to/your/report.pbix` into a temporary directory (`./temp_pbix_work/...`).
+2.  It parses the `Report/Layout` file.
+3.  It sends the user request (`"Add a textbox..."`) and a summary of the report structure to the AI handler (`src/ai_handler.py`).
+4.  The AI handler (currently a placeholder) returns structured instructions (e.g., `{'action': 'add_visual', 'target': {'section_name': 'ReportSection'}, 'parameters': {'visual_type': 'textbox', 'properties': {'text': 'Confidential Draft'}}}`).
+5.  The `apply_edits` function in `transformer.py` receives these instructions and modifies the parsed layout data (currently by adding comments like `_ai_instruction_add_textbox_on_ReportSection`).
+6.  The modified layout data is saved back to the temporary directory.
+7.  **Important:** Repackaging is **not yet implemented**. The script currently simulates this by copying the *original* input PBIX to the output path. The actual modified layout JSON remains in the temporary directory for inspection.
+
+**To Inspect Changes:**
+
+*   After running the command, look inside the `./temp_pbix_work/` directory.
+*   Find the subdirectory corresponding to your run (it includes the PBIX filename and process ID).
+*   Navigate to the `Report` folder within that subdirectory.
+*   Open the `Layout` file (it's JSON) to see the comments added by the placeholder `apply_edits` function, indicating where the AI intended to make changes.
 
 ## Contributing
 
-Contributions are welcome! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) (to be created) for guidelines on how to contribute to this project.
+Contributions are welcome! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file (to be created) for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
-*   The `pbi-tools` project for enabling programmatic PBIX manipulation.
-*   The Power BI community for resources and inspiration.
-
+*   The `pbi-tools` project for inspiration and potential future integration.
+*   The Power BI community for resources.
+'''
